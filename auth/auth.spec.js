@@ -27,14 +27,14 @@ describe("auth router", () => {
 //   THIS TEST WILL NOT WORK
 test("login user with correct password", async () => {
     const res = await supertest(server)
-      .post("/api/auth/login")
-      .send({ username: "harrypotter1",  password: "testing1" })
-    expect(res.status).toBe(200)
+     .post("/api/auth/login")
+      .send({ username: "harrypotter",  password: "testing1" })
+        expect(res.status).toBe(200)
   })
    test("login in user incorrectly", async () => {
       const res = await supertest(server)
       .post("/api/auth/login")
-      .send({ username: "harry", password: "testing1" })
+      .send({ username: "harrypotter", password: "testing" })
       expect(res.status).toBe(401)
   })
 })
