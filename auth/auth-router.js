@@ -4,26 +4,27 @@ const jwt = require("jsonwebtoken")
 
 const Users = require("../users/users-model")
 
-router.post("/register", async (req, res, next) => {
-  try {
-    const { username, password } = req.body
-    const newUser =
-      username && password
-        ? await Users.add({ username, password })
-        : res.status(500).json({ message: "Missing username and/or password" })
-    res.status(201).json(newUser)
-  } catch (err) {
-    next(err)
-  }
+router.post('/register', (req, res) => {
+    let user = req.body
+    //hasing the password 2 ^ 10
+    const hash = bcrypt.hashSync(user.password, 10)
+    user.password = hash
+
+    Users.add(user) 
+        .then(saved => {
+            res.status(201).json(saved)
+        })
+        .catch(err => {
+            res.status(500).json(err)
+        })
 })
+
 
 router.post('/login', (req, res) => {
   let { username, password } = req.body
   Users.findBy({ username })
-    .first
-    .then(user => {
-      first()
-      .then(user => {
+    .first()
+     .then(user => {
         if (user && bcrypt.compareSync(password, user.password)) {
           const token = assignToken(user)
 
@@ -38,7 +39,6 @@ router.post('/login', (req, res) => {
       .catch(err => {
         res.status(500).json(err)
       })
-    })
 });
 
 //creates and assign the token
